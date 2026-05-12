@@ -866,7 +866,7 @@ export default function Dashboard() {
             {currentPage === 'ai-logs' && (
               <section className="page-section active" id="page-ai-logs">
                 <div className="section-header">
-                  <h2>AI Logs <span className="count">{aiLogs.length} actions logged</span></h2>
+                  <h2>AI Logs <span className="count">{recentActivities.length} actions logged</span></h2>
                 </div>
                 <div className="data-table">
                   <table>
@@ -874,14 +874,14 @@ export default function Dashboard() {
                       <tr><th>Action</th><th>Details</th><th>Time</th></tr>
                     </thead>
                     <tbody>
-                      {aiLogs.length === 0 ? (
+                      {recentActivities.length === 0 ? (
                         <tr><td colSpan="3" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>No AI actions logged yet.</td></tr>
                       ) : (
-                        aiLogs.map(log => (
-                          <tr key={log.id}>
-                            <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{log.action}</td>
-                            <td>{log.details}</td>
-                            <td><span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{log.time}</span></td>
+                        recentActivities.map(activity => (
+                          <tr key={activity.id}>
+                            <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{activity.type}</td>
+                            <td>{activity.text}</td>
+                            <td><span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{activity.time}</span></td>
                           </tr>
                         ))
                       )}
