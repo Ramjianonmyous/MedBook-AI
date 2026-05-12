@@ -442,6 +442,25 @@ export default function Dashboard() {
     return cells;
   };
 
+  const recentActivities = [
+    ...patients.map(p => ({
+      id: p._id || p.id,
+      text: `New patient ${p.firstName} ${p.lastName} registered`,
+      type: 'Registration',
+      time: p.createdAt ? new Date(p.createdAt).toLocaleTimeString() : p.since || 'Just now',
+      status: 'completed',
+      date: p.createdAt || new Date()
+    })),
+    ...appointments.map(a => ({
+      id: a._id,
+      text: `Appointment booked for ${a.patientName}`,
+      type: 'Appointment',
+      time: a.createdAt ? new Date(a.createdAt).toLocaleTimeString() : 'Just now',
+      status: a.status?.toLowerCase() || 'pending',
+      date: a.createdAt || new Date()
+    }))
+  ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5);
+
   return (
     <>
       {/* Floating Particles Background */}
@@ -662,24 +681,18 @@ export default function Dashboard() {
                         <tr><th>Recent Activity</th><th>Type</th><th>Time</th><th>Status</th></tr>
                       </thead>
                       <tbody>
-                        <tr>
-                          <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>New patient Emily Rodriguez registered</td>
-                          <td><span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: 'rgba(13,148,136,0.08)', color: 'var(--primary)' }}>Registration</span></td>
-                          <td>2 min ago</td>
-                          <td><span className="patient-status active"><span className="dot"></span>completed</span></td>
-                        </tr>
-                        <tr>
-                          <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>Appointment confirmed for Sarah Johnson</td>
-                          <td><span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: 'rgba(13,148,136,0.08)', color: 'var(--primary)' }}>Appointment</span></td>
-                          <td>15 min ago</td>
-                          <td><span className="patient-status pending"><span className="dot"></span>pending</span></td>
-                        </tr>
-                        <tr>
-                          <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>Lab results ready for Michael Chen</td>
-                          <td><span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: 'rgba(13,148,136,0.08)', color: 'var(--primary)' }}>Lab</span></td>
-                          <td>1 hr ago</td>
-                          <td><span className="patient-status pending"><span className="dot"></span>pending</span></td>
-                        </tr>
+                        {recentActivities.length === 0 ? (
+                          <tr><td colSpan="4" style={{ textAlign: 'center', color: 'var(--text-muted)', padding: '20px' }}>No recent activities.</td></tr>
+                        ) : (
+                          recentActivities.map(activity => (
+                            <tr key={activity.id}>
+                              <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{activity.text}</td>
+                              <td><span style={{ padding: '3px 10px', borderRadius: '6px', fontSize: '11px', fontWeight: 600, background: 'rgba(13,148,136,0.08)', color: 'var(--primary)' }}>{activity.type}</span></td>
+                              <td>{activity.time}</td>
+                              <td><span className={`patient-status ${activity.status}`}><span className="dot"></span>{activity.status}</span></td>
+                            </tr>
+                          ))
+                        )}
                       </tbody>
                     </table>
                   </div>
