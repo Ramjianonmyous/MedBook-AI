@@ -87,6 +87,12 @@ export default function Dashboard() {
   // Dropdown States
   const [notifDropdownOpen, setNotifDropdownOpen] = useState(false);
   const [issuesDropdownOpen, setIssuesDropdownOpen] = useState(false);
+  const [issues, setIssues] = useState([
+    { id: 1, text: 'Login issue reported by Nurse Amy.', reportedBy: 'Nurse Amy', status: 'pending', time: '10 min ago' },
+    { id: 2, text: 'Printer not working at reception.', reportedBy: 'Tom Bradley', status: 'in-progress', time: '1 hr ago' },
+    { id: 3, text: 'Need new stethoscope in Room 3.', reportedBy: 'Dr. Mitchell', status: 'open', time: '2 hrs ago' },
+    { id: 4, text: 'Wi-Fi slow in waiting area.', reportedBy: 'Receptionist', status: 'completed', time: '1 day ago' }
+  ]);
   
   // Modals
   const [activeModal, setActiveModal] = useState(null); // 'patientModal', 'viewPatientModal'
@@ -914,10 +920,35 @@ export default function Dashboard() {
                 <div className="section-header"><h2>Support Issues</h2></div>
                 <div className="data-table">
                   <table>
-                    <thead><tr><th>Issue</th><th>Reported By</th><th>Status</th></tr></thead>
+                    <thead><tr><th>Issue</th><th>Reported By</th><th>Status</th><th>Actions</th></tr></thead>
                     <tbody>
-                      <tr><td>Login issue reported by Nurse Amy.</td><td>Nurse Amy</td><td><span className="patient-status pending"><span className="dot"></span>Pending</span></td></tr>
-                      <tr><td>Printer not working at reception.</td><td>Tom Bradley</td><td><span className="patient-status active"><span className="dot"></span>Open</span></td></tr>
+                      {issues.map(issue => (
+                        <tr key={issue.id}>
+                          <td style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{issue.text}</td>
+                          <td>{issue.reportedBy}</td>
+                          <td>
+                            <span className={`patient-status ${issue.status === 'in-progress' ? 'pending' : issue.status === 'open' ? 'active' : issue.status}`}>
+                              <span className="dot"></span>
+                              {issue.status.charAt(0).toUpperCase() + issue.status.slice(1)}
+                            </span>
+                          </td>
+                          <td>
+                            <select 
+                              value={issue.status}
+                              onChange={(e) => {
+                                setIssues(prev => prev.map(i => i.id === issue.id ? { ...i, status: e.target.value } : i));
+                                showToast(`Status updated to ${e.target.value}`, 'success');
+                              }}
+                              style={{ padding: '4px 8px', borderRadius: '6px', border: '1px solid var(--border)', fontSize: '12px', background: 'var(--card-bg)', color: 'var(--text-primary)' }}
+                            >
+                              <option value="open">Open</option>
+                              <option value="pending">Pending</option>
+                              <option value="in-progress">In Progress</option>
+                              <option value="completed">Completed</option>
+                            </select>
+                          </td>
+                        </tr>
+                      ))}
                     </tbody>
                   </table>
                 </div>
@@ -951,6 +982,20 @@ export default function Dashboard() {
                         <td>Ankle Fracture</td>
                         <td>Dr. Mitchell</td>
                         <td>May 09, 2026</td>
+                        <td><span className="patient-status inactive"><span className="dot"></span>Inactive</span></td>
+                      </tr>
+                      <tr>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Emily Rodriguez</td>
+                        <td>Annual Physical</td>
+                        <td>Dr. Mitchell</td>
+                        <td>May 12, 2026</td>
+                        <td><span className="patient-status active"><span className="dot"></span>Active</span></td>
+                      </tr>
+                      <tr>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>James Wilson</td>
+                        <td>Post-Op Follow-up</td>
+                        <td>Dr. Mitchell</td>
+                        <td>May 07, 2026</td>
                         <td><span className="patient-status inactive"><span className="dot"></span>Inactive</span></td>
                       </tr>
                     </tbody>
@@ -993,6 +1038,20 @@ export default function Dashboard() {
                         <td>Dr. Mitchell</td>
                         <td>May 08, 2026</td>
                       </tr>
+                      <tr>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Lisa Park</td>
+                        <td>Prenatal Vitamins</td>
+                        <td>Once daily</td>
+                        <td>Dr. Mitchell</td>
+                        <td>May 05, 2026</td>
+                      </tr>
+                      <tr>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>David Thompson</td>
+                        <td>Ibuprofen 400mg</td>
+                        <td>As needed</td>
+                        <td>Dr. Mitchell</td>
+                        <td>May 09, 2026</td>
+                      </tr>
                     </tbody>
                   </table>
                 </div>
@@ -1026,6 +1085,20 @@ export default function Dashboard() {
                         <td>CBC</td>
                         <td style={{ fontWeight: 600, color: 'var(--primary)' }}>Normal</td>
                         <td>Normal Range</td>
+                        <td><span className="patient-status active"><span className="dot"></span>Completed</span></td>
+                      </tr>
+                      <tr>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>Emily Rodriguez</td>
+                        <td>Blood Glucose</td>
+                        <td style={{ fontWeight: 600, color: 'var(--primary)' }}>95 mg/dL</td>
+                        <td>70-100 mg/dL</td>
+                        <td><span className="patient-status active"><span className="dot"></span>Completed</span></td>
+                      </tr>
+                      <tr>
+                        <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>David Thompson</td>
+                        <td>Uric Acid</td>
+                        <td style={{ fontWeight: 600, color: 'var(--primary)' }}>6.0 mg/dL</td>
+                        <td>3.4-7.0 mg/dL</td>
                         <td><span className="patient-status active"><span className="dot"></span>Completed</span></td>
                       </tr>
                     </tbody>
